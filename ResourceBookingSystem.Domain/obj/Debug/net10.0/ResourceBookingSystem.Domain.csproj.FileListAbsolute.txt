@@ -1,0 +1,15 @@
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\bin\Debug\net10.0\ResourceBookingSystem.Domain.deps.json
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\bin\Debug\net10.0\ResourceBookingSystem.Domain.dll
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\bin\Debug\net10.0\ResourceBookingSystem.Domain.pdb
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\bin\Debug\net10.0\ResourceBookingSystem.Database.dll
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\bin\Debug\net10.0\ResourceBookingSystem.Database.pdb
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ResourceBookingSystem.Domain.csproj.AssemblyReference.cache
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ResourceBookingSystem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ResourceBookingSystem.Domain.AssemblyInfoInputs.cache
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ResourceBookingSystem.Domain.AssemblyInfo.cs
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ResourceBookingSystem.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\Resource.F095858C.Up2Date
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ResourceBookingSystem.Domain.dll
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\refint\ResourceBookingSystem.Domain.dll
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ResourceBookingSystem.Domain.pdb
+C:\Users\Neki\programming\c#\backend_projects\ResourceBookingSystem\ResourceBookingSystem.Domain\obj\Debug\net10.0\ref\ResourceBookingSystem.Domain.dll

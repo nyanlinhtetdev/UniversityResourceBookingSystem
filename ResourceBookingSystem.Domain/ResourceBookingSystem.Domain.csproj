@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ResourceBookingSystem.Database\ResourceBookingSystem.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Booking\DTOs\" />
+    <Folder Include="Booking\ServiceInterfaces\" />
+    <Folder Include="Booking\Services\" />
+    <Folder Include="Admin\DTOs\" />
+    <Folder Include="Admin\ServiceInterfaces\" />
+    <Folder Include="Admin\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,117 @@
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
+using ResourceBookingSystem.Database.AppDbContextModels;
+using ResourceBookingSystem.Domain.Auth.Services;
+using ResourceBookingSystem.Domain.Auth.ServiceInterfaces;
+using Scalar.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi;
+using ResourceBookingSystem.Domain.UserDomain.ServiceInterfaces;
+using ResourceBookingSystem.Domain.UserDomain.Services;
+using ResourceBookingSystem.Domain.Resource.ServiceInterfaces;
+using ResourceBookingSystem.Domain.Resource.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IResourceService, ResourceService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["AppSettings:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["AppSettings:Audience"],
+            ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"]!)),
+            ValidateIssuerSigningKey = true
+        };
+    });
+
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Instance =
+            $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+
+        context.ProblemDetails.Extensions.TryAdd(
+            "requestId",
+            context.HttpContext.TraceIdentifier);
+
+        var activity = context.HttpContext.Features
+            .Get<IHttpActivityFeature>()?.Activity;
+
+        context.ProblemDetails.Extensions.TryAdd(
+            "traceId",
+            activity?.Id);
+    };
+});
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Resource Booking API",
+        Version = "v1",
+        Description = "Resource Booking Backend API"
+    });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token (without 'Bearer ' prefix)"
+    });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapSwagger("/openapi/{documentName}.json");
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("Resource Booking API")
+            .WithTheme(ScalarTheme.Moon)
+            .WithOpenApiRoutePattern("/openapi/{documentName}.json");
+    });
+    app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
+}
+
+app.UseExceptionHandler();
+
+app.UseStatusCodePages();
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

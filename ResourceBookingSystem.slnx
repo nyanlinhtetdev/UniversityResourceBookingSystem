@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ResourceBookingSystem.Database/ResourceBookingSystem.Database.csproj" />
+  <Project Path="ResourceBookingSystem.Domain/ResourceBookingSystem.Domain.csproj" />
+  <Project Path="ResourceBookingSystem/ResourceBookingSystem.API.csproj" />
+</Solution>
