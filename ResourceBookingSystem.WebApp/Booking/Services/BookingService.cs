@@ -3,83 +3,137 @@ using ResourceBookingSystem.Database.AppDbContextModels;
 using ResourceBookingSystem.WebApp.Booking.DTOs;
 using ResourceBookingSystem.WebApp.Booking.Enums;
 using ResourceBookingSystem.WebApp.Booking.ServiceInterfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 using BookingEntity = ResourceBookingSystem.Database.AppDbContextModels.Booking;
 
 namespace ResourceBookingSystem.WebApp.Booking.Services
 {
     public class BookingService(AppDbContext dbContext): IBookingService
     {
-        public async Task<BookingResult> CreateBookingAsync(Guid UserId, BookingRequestDto request)
+        public async Task<BookingResult> CreateBookingAsync(
+            Guid userId,
+            BookingRequestDto request)
         {
-            if (!BookingDatetimeIsAvailable(request))
+            if (!BookingDatetimeIsAvailable(
+                    request.StartDatetime,
+                    request.EndDatetime))
             {
                 return new(BookingStatus.InvalidTimeRange);
             }
 
-            if(!await ResourceIsAvailable(request.ResourceId))
+            if (!await ResourceIsAvailable(request.ResourceId))
             {
                 return new(BookingStatus.ResourceUnavailable);
             }
 
-            if (await BookingExistsAsync(request))
+            if (await BookingExistsAsync(
+                    request.ResourceId,
+                    request.StartDatetime,
+                    request.EndDatetime))
             {
                 return new(BookingStatus.SlotAlreadyBooked);
             }
 
-            BookingEntity newBooking = new BookingEntity
+            var newBooking = new BookingEntity
             {
-                UserId = UserId,
+                UserId = userId,
                 ResourceId = request.ResourceId,
                 Status = "Confirmed",
                 StartDatetime = request.StartDatetime,
                 EndDatetime = request.EndDatetime
             };
+
             await dbContext.Bookings.AddAsync(newBooking);
             await dbContext.SaveChangesAsync();
+
             return new(
-                BookingStatus.Success, 
-                RespondBookingData(newBooking)
-            );
+                BookingStatus.Success,
+                RespondBookingData(newBooking));
         }
 
-        private bool BookingDatetimeIsAvailable(BookingRequestDto request)
+        public async Task<BookingResult> UpdateBookingAsync(
+            Guid bookingId,
+            Guid userId,
+            BookingUpdateRequestDto request)
         {
-            if (request.StartDatetime >= request.EndDatetime)
+            var booking = await dbContext.Bookings
+                .FirstOrDefaultAsync(existingBooking =>
+                    existingBooking.BookingId == bookingId &&
+                    existingBooking.UserId == userId);
+
+            if (booking is null)
+            {
+                return new(BookingStatus.BookingNotFound);
+            }
+
+            if (!BookingDatetimeIsAvailable(
+                    request.StartDatetime,
+                    request.EndDatetime))
+            {
+                return new(BookingStatus.InvalidTimeRange);
+            }
+
+            if (!await ResourceIsAvailable(booking.ResourceId))
+            {
+                return new(BookingStatus.ResourceUnavailable);
+            }
+
+            if (await BookingExistsAsync(
+                    booking.ResourceId,
+                    request.StartDatetime,
+                    request.EndDatetime,
+                    booking.BookingId))
+            {
+                return new(BookingStatus.SlotAlreadyBooked);
+            }
+
+            booking.StartDatetime = request.StartDatetime;
+            booking.EndDatetime = request.EndDatetime;
+            booking.ModifiedDatetime = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync();
+
+            return new(
+                BookingStatus.Success,
+                RespondBookingData(booking));
+        }
+
+        private static bool BookingDatetimeIsAvailable(
+            DateTime startDatetime, 
+            DateTime endDatetime)
+        {
+            if (startDatetime >= endDatetime)
             {
                 return false;
             }
 
-            var duration = request.EndDatetime - request.StartDatetime;
+            var duration = endDatetime - startDatetime;
 
             if (duration != TimeSpan.FromHours(1))
             {
                 return false;
             }
 
-            if (request.StartDatetime.Minute != 0 ||
-                request.StartDatetime.Second != 0 ||
-                request.StartDatetime.Millisecond != 0 ||
-                request.EndDatetime.Minute != 0 ||
-                request.EndDatetime.Second != 0 ||
-                request.EndDatetime.Millisecond != 0)
-            {
-                return false;
-            }
-            return true;
+            return startDatetime.Minute == 0 &&
+                   startDatetime.Second == 0 &&
+                   startDatetime.Millisecond == 0 &&
+                   endDatetime.Minute == 0 &&
+                   endDatetime.Second == 0 &&
+                   endDatetime.Millisecond == 0;
         }
 
-        private Task<bool> BookingExistsAsync(BookingRequestDto request)
+        private Task<bool> BookingExistsAsync(
+            Guid resourceId,
+            DateTime startDatetime,
+            DateTime endDatetime,
+            Guid? excludedBookingId = null)
         {
-            return dbContext.Bookings.AnyAsync(
-                booking => booking.ResourceId == request.ResourceId &&
-                           booking.Status != "Cancelled" &&
-                           booking.StartDatetime == request.StartDatetime &&
-                           booking.EndDatetime == request.EndDatetime);
+            return dbContext.Bookings.AnyAsync(booking =>
+                booking.ResourceId == resourceId &&
+                booking.Status != "Cancelled" &&
+                (excludedBookingId == null ||
+                 booking.BookingId != excludedBookingId) &&
+                booking.StartDatetime < endDatetime &&
+                booking.EndDatetime > startDatetime);
         }
 
         private Task<bool> ResourceIsAvailable(Guid resourceId)

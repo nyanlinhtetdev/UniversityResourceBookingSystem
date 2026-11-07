@@ -13,6 +13,14 @@ namespace ResourceBookingSystem.WebApp.Booking.DTOs
 
         public DateTime EndDatetime { get; set; }
     }
+
+    public class BookingUpdateRequestDto
+    {
+        public DateTime StartDatetime { get; set; }
+
+        public DateTime EndDatetime { get; set; }
+    }
+
     public class BookingResponseDto
     {
         public Guid BookingId { get; set; }

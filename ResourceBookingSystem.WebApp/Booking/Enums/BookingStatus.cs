@@ -9,6 +9,7 @@ namespace ResourceBookingSystem.WebApp.Booking.Enums
         Success,
         InvalidTimeRange,
         ResourceUnavailable,
-        SlotAlreadyBooked
+        SlotAlreadyBooked,
+        BookingNotFound
     }
 }

@@ -1,5 +1,5 @@
 <Solution>
+  <Project Path="ResourceBookingSystem.Api/ResourceBookingSystem.Api.csproj" />
   <Project Path="ResourceBookingSystem.Database/ResourceBookingSystem.Database.csproj" />
-  <Project Path="ResourceBookingSystem.Domain/ResourceBookingSystem.WebApp.csproj" />
-  <Project Path="ResourceBookingSystem/ResourceBookingSystem.API.csproj" DisplayName="ResourceBookingSystem.Api" />
+  <Project Path="ResourceBookingSystem.WebApp/ResourceBookingSystem.WebApp.csproj" />
 </Solution>
