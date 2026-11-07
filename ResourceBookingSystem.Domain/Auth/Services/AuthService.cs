@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ResourceBookingSystem.Database.AppDbContextModels;
-using ResourceBookingSystem.Domain.Auth.DTOs;
-using ResourceBookingSystem.Domain.Auth.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Auth.DTOs;
+using ResourceBookingSystem.WebApp.Auth.ServiceInterfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ResourceBookingSystem.Domain.Auth.Services
+namespace ResourceBookingSystem.WebApp.Auth.Services
 {
     public class AuthService(AppDbContext dbContext, IConfiguration configuration): IAuthService
     {

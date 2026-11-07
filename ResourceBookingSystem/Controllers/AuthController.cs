@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ResourceBookingSystem.Domain.Auth.DTOs;
-using ResourceBookingSystem.Domain.Auth.Services;
-using ResourceBookingSystem.Domain.Auth.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Auth.DTOs;
+using ResourceBookingSystem.WebApp.Auth.Services;
+using ResourceBookingSystem.WebApp.Auth.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ResourceBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {

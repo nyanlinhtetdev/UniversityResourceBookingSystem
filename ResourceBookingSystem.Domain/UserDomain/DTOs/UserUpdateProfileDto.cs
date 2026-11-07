@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ResourceBookingSystem.Domain.UserDomain.DTOs
+namespace ResourceBookingSystem.WebApp.UserDomain.DTOs
 {
     public class UserUpdateProfileDto
     {

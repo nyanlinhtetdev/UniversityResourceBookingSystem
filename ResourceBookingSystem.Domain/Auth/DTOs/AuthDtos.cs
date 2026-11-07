@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ResourceBookingSystem.Domain.Auth.DTOs
+namespace ResourceBookingSystem.WebApp.Auth.DTOs
 {
     public class RegisterRequestDto
     {

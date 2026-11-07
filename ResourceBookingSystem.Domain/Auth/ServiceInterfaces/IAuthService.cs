@@ -1,10 +1,10 @@
 ﻿using ResourceBookingSystem.Database.AppDbContextModels;
-using ResourceBookingSystem.Domain.Auth.DTOs;
+using ResourceBookingSystem.WebApp.Auth.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ResourceBookingSystem.Domain.Auth.ServiceInterfaces
+namespace ResourceBookingSystem.WebApp.Auth.ServiceInterfaces
 {
     public interface IAuthService
     {

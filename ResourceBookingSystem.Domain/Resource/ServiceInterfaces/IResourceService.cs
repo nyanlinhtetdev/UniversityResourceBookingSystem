@@ -1,6 +1,6 @@
-using ResourceBookingSystem.Domain.Resource.DTOs;
+using ResourceBookingSystem.WebApp.Resource.DTOs;
 
-namespace ResourceBookingSystem.Domain.Resource.ServiceInterfaces;
+namespace ResourceBookingSystem.WebApp.Resource.ServiceInterfaces;
 
 public interface IResourceService
 {

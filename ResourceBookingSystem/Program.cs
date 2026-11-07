@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using ResourceBookingSystem.Database.AppDbContextModels;
-using ResourceBookingSystem.Domain.Auth.Services;
-using ResourceBookingSystem.Domain.Auth.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Auth.Services;
+using ResourceBookingSystem.WebApp.Auth.ServiceInterfaces;
 using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi;
-using ResourceBookingSystem.Domain.UserDomain.ServiceInterfaces;
-using ResourceBookingSystem.Domain.UserDomain.Services;
-using ResourceBookingSystem.Domain.Resource.ServiceInterfaces;
-using ResourceBookingSystem.Domain.Resource.Services;
+using ResourceBookingSystem.WebApp.UserDomain.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.UserDomain.Services;
+using ResourceBookingSystem.WebApp.Resource.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Resource.Services;
+using ResourceBookingSystem.WebApp.Booking.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Booking.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ResourceBookingSystem.Domain.UserDomain.Services;
-using ResourceBookingSystem.Domain.UserDomain.DTOs;
-using ResourceBookingSystem.Domain.UserDomain.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.UserDomain.Services;
+using ResourceBookingSystem.WebApp.UserDomain.DTOs;
+using ResourceBookingSystem.WebApp.UserDomain.ServiceInterfaces;
 using System.Security.Claims;
 
 namespace ResourceBookingSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController(IUserService userService) : ControllerBase
     {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ResourceBookingSystem.Domain.Resource.DTOs;
+namespace ResourceBookingSystem.WebApp.Resource.DTOs;
 
 public sealed class ResourceRequestDto
 {

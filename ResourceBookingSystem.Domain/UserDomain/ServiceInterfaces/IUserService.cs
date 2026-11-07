@@ -1,9 +1,9 @@
-﻿using ResourceBookingSystem.Domain.UserDomain.DTOs;
+﻿using ResourceBookingSystem.WebApp.UserDomain.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ResourceBookingSystem.Domain.UserDomain.ServiceInterfaces
+namespace ResourceBookingSystem.WebApp.UserDomain.ServiceInterfaces
 {
     public interface IUserService
     {

@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ResourceBookingSystem.Database\ResourceBookingSystem.Database.csproj" />
-    <ProjectReference Include="..\ResourceBookingSystem.Domain\ResourceBookingSystem.Domain.csproj" />
+    <ProjectReference Include="..\ResourceBookingSystem.Domain\ResourceBookingSystem.WebApp.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

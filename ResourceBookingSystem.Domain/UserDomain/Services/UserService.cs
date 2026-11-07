@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResourceBookingSystem.Database.AppDbContextModels;
-using ResourceBookingSystem.Domain.UserDomain.DTOs;
-using ResourceBookingSystem.Domain.UserDomain.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.UserDomain.DTOs;
+using ResourceBookingSystem.WebApp.UserDomain.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ResourceBookingSystem.Domain.UserDomain.Services
+namespace ResourceBookingSystem.WebApp.UserDomain.Services
 {
     public class UserService(AppDbContext dbContext): IUserService
     {

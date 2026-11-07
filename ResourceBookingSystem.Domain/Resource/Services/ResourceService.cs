@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResourceBookingSystem.Database.AppDbContextModels;
-using ResourceBookingSystem.Domain.Resource.DTOs;
-using ResourceBookingSystem.Domain.Resource.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Resource.DTOs;
+using ResourceBookingSystem.WebApp.Resource.ServiceInterfaces;
 using ResourceEntity = ResourceBookingSystem.Database.AppDbContextModels.Resource;
 
-namespace ResourceBookingSystem.Domain.Resource.Services;
+namespace ResourceBookingSystem.WebApp.Resource.Services;
 
 public sealed class ResourceService(AppDbContext dbContext) : IResourceService
 {

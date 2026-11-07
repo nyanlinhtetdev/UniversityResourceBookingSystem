@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ResourceBookingSystem.Domain.Resource.DTOs;
-using ResourceBookingSystem.Domain.Resource.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Resource.DTOs;
+using ResourceBookingSystem.WebApp.Resource.ServiceInterfaces;
 
 namespace ResourceBookingSystem.API.Controllers
 {
