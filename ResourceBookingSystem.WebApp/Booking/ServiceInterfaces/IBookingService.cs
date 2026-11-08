@@ -9,5 +9,6 @@ namespace ResourceBookingSystem.WebApp.Booking.ServiceInterfaces
     {
         Task<BookingResult> CreateBookingAsync(Guid UserId, BookingRequestDto request);
         Task<BookingResult> UpdateBookingAsync(Guid bookingId, Guid userId, BookingUpdateRequestDto request);
+        Task<bool> CancelBookingAsync(Guid bookingId, Guid userId);
     }
 }

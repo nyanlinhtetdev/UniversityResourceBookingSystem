@@ -11,7 +11,7 @@ namespace ResourceBookingSystem.API.Controllers;
 [ApiController]
 [Authorize]
 public class BookingsController(IBookingService bookingService)
-    : ControllerBase
+: ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateBooking(
@@ -45,6 +45,21 @@ public class BookingsController(IBookingService bookingService)
             request);
 
         return HandleBookingResult(result, isCreate: false);
+    }
+
+    [HttpPatch("{bookingId:guid}/cancel")]
+    public async Task<IActionResult> CancelBooking(Guid bookingId)
+    {
+        if(!TryGetCurrentUserId(out var currentUserId))
+        {
+            return Unauthorized();
+        }
+
+        var cancelled = await bookingService.CancelBookingAsync(bookingId, currentUserId);
+
+        return cancelled
+            ? NoContent()
+            : NotFound();
     }
 
     private bool TryGetCurrentUserId(out Guid userId)

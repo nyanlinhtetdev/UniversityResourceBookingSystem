@@ -96,6 +96,28 @@ namespace ResourceBookingSystem.WebApp.Booking.Services
                 BookingStatus.Success,
                 RespondBookingData(booking));
         }
+        
+        public async Task<bool> CancelBookingAsync(
+            Guid bookingId,
+            Guid userId)
+        {
+            var booking = await dbContext.Bookings
+                .FirstOrDefaultAsync(booking =>
+                    booking.BookingId == bookingId &&
+                    booking.UserId == userId &&
+                    booking.Status != "Cancelled" &&
+                    booking.StartDatetime > DateTime.UtcNow); 
+
+            if(booking is null)
+            {
+                return false;
+            }
+
+            booking.Status = "Cancelled";
+            booking.ModifiedDatetime = DateTime.UtcNow;
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
 
         private static bool BookingDatetimeIsAvailable(
             DateTime startDatetime, 
