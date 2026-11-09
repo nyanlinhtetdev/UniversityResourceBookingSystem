@@ -222,17 +222,38 @@ namespace ResourceBookingSystem.WebApp.Booking.Services
                 BookingPeriod.History);
         }
 
+        public Task<PaginatedResponse<BookingResponseDto>> GetAllBookingsAsync(
+            int pageNumber,
+            int pageSize)
+        {
+            return GetBookingsAsync(
+                null,
+                pageNumber,
+                pageSize,
+                BookingPeriod.All,
+                includeCancelled: true);
+        }
+
         private async Task<PaginatedResponse<BookingResponseDto>> GetBookingsAsync(
-            Guid userId,
+            Guid? userId,
             int pageNumber,
             int pageSize,
-            BookingPeriod period)
+            BookingPeriod period,
+            bool includeCancelled = false)
         {
             var now = DateTime.UtcNow;
 
-            var query = dbContext.Bookings
-                .AsNoTracking()
-                .Where(booking => booking.UserId == userId && booking.Status != "Cancelled");
+            var query = dbContext.Bookings.AsNoTracking().AsQueryable();
+
+            if (userId.HasValue)
+            {
+                query = query.Where(booking => booking.UserId == userId.Value);
+            }
+
+            if (!includeCancelled)
+            {
+                query = query.Where(booking => booking.Status != "Cancelled");
+            }
 
             query = period switch
             {
@@ -273,6 +294,38 @@ namespace ResourceBookingSystem.WebApp.Booking.Services
                 TotalPages = (int)Math.Ceiling(
                     (double)totalRecords / pageSize)
             };
+        }
+
+        public async Task<BookingResponseDto?> GetByIdForAdminAsync(
+            Guid bookingId)
+        {
+            var booking = await dbContext.Bookings
+                .AsNoTracking()
+                .FirstOrDefaultAsync(item => item.BookingId == bookingId);
+
+            return booking is null
+                ? null
+                : RespondBookingData(booking);
+        }
+
+        public async Task<bool> CancelBookingByAdminAsync(Guid bookingId)
+        {
+            var booking = await dbContext.Bookings
+                .FirstOrDefaultAsync(item =>
+                    item.BookingId == bookingId &&
+                    item.Status != "Cancelled");
+
+            if (booking is null)
+            {
+                return false;
+            }
+
+            booking.Status = "Cancelled";
+            booking.ModifiedDatetime = DateTime.UtcNow;
+
+            await dbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<BookingResponseDto?> GetByIdAsync(

@@ -24,6 +24,14 @@ public interface IBookingService
         Guid bookingId,
         Guid userId);
 
+    Task<PaginatedResponse<BookingResponseDto>> GetAllBookingsAsync(
+        int pageNumber,
+        int pageSize);
+
+    Task<BookingResponseDto?> GetByIdForAdminAsync(Guid bookingId);
+
+    Task<bool> CancelBookingByAdminAsync(Guid bookingId);
+
     Task<BookingResult> CreateBookingAsync(
         Guid userId,
         BookingRequestDto request);

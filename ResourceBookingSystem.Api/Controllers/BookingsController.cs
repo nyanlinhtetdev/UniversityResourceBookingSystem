@@ -10,7 +10,7 @@ namespace ResourceBookingSystem.API.Controllers;
 
 [Route("api/bookings")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Student,Admin,SuperAdmin")]
 public class BookingsController(IBookingService bookingService)
 : ControllerBase
 {
