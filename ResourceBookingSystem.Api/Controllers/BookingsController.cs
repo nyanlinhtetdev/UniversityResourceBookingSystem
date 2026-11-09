@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ResourceBookingSystem.WebApp.Booking.DTOs;
 using ResourceBookingSystem.WebApp.Booking.Enums;
 using ResourceBookingSystem.WebApp.Booking.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Shared.DTOs;
 using System.Security.Claims;
 
 namespace ResourceBookingSystem.API.Controllers;
@@ -13,6 +14,7 @@ namespace ResourceBookingSystem.API.Controllers;
 public class BookingsController(IBookingService bookingService)
 : ControllerBase
 {
+
     [HttpPost]
     public async Task<IActionResult> CreateBooking(
         BookingRequestDto request)
@@ -60,6 +62,95 @@ public class BookingsController(IBookingService bookingService)
         return cancelled
             ? NoContent()
             : NotFound();
+    }
+
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyBookings(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        return await GetBookingListAsync(
+            pageNumber,
+            pageSize,
+            (userId, page, size) =>
+                bookingService.GetMyBookingsAsync(
+                    userId,
+                    page,
+                    size));
+    }
+
+    [HttpGet("my/upcoming")]
+    public async Task<IActionResult> GetUpcomingBookings(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        return await GetBookingListAsync(
+            pageNumber,
+            pageSize,
+            (userId, page, size) =>
+                bookingService.GetUpcomingBookingsAsync(
+                    userId,
+                    page,
+                    size));
+    }
+
+    [HttpGet("my/history")]
+    public async Task<IActionResult> GetBookingHistory(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        return await GetBookingListAsync(
+            pageNumber,
+            pageSize,
+            (userId, page, size) =>
+                bookingService.GetBookingHistoryAsync(
+                    userId,
+                    page,
+                    size));
+    }
+
+    private async Task<IActionResult> GetBookingListAsync(
+        int pageNumber,
+        int pageSize,
+        Func<Guid, int, int, Task<PaginatedResponse<BookingResponseDto>>> query)
+    {
+        if (!TryGetCurrentUserId(out var currentUserId))
+        {
+            return Unauthorized();
+        }
+
+        if (pageNumber < 1 || pageSize < 1 || pageSize > 100)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid pagination",
+                detail: "Page number must be at least 1 and page size must be between 1 and 100.");
+        }
+
+        var result = await query(
+            currentUserId,
+            pageNumber,
+            pageSize);
+
+        return Ok(result);
+    }
+
+
+    [HttpGet("{bookingId:guid}")]
+    public async Task<IActionResult> GetBooking(Guid bookingId)
+    {
+        if (!TryGetCurrentUserId(out var currentUserId))
+        {
+            return Unauthorized();
+        }
+
+        var booking = await bookingService.GetByIdAsync(
+            bookingId,
+            currentUserId);
+
+        return booking is null
+            ? NotFound()
+            : Ok(booking);
     }
 
     private bool TryGetCurrentUserId(out Guid userId)

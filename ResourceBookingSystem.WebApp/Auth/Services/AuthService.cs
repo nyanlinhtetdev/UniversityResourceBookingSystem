@@ -114,7 +114,7 @@ namespace ResourceBookingSystem.WebApp.Auth.Services
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: credentials);
-
+             
             return new JwtSecurityTokenHandler()
                 .WriteToken(tokenDescriptor);
         }

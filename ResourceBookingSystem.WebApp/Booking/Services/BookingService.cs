@@ -3,6 +3,8 @@ using ResourceBookingSystem.Database.AppDbContextModels;
 using ResourceBookingSystem.WebApp.Booking.DTOs;
 using ResourceBookingSystem.WebApp.Booking.Enums;
 using ResourceBookingSystem.WebApp.Booking.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.Resource.DTOs;
+using ResourceBookingSystem.WebApp.Shared.DTOs;
 using BookingEntity = ResourceBookingSystem.Database.AppDbContextModels.Booking;
 
 namespace ResourceBookingSystem.WebApp.Booking.Services
@@ -175,6 +177,117 @@ namespace ResourceBookingSystem.WebApp.Booking.Services
                 StartDatetime = bookingEntity.StartDatetime,
                 EndDatetime = bookingEntity.EndDatetime
             };
+        }
+
+        private enum BookingPeriod
+        {
+            All,
+            Upcoming,
+            History
+        }
+
+        public Task<PaginatedResponse<BookingResponseDto>> GetMyBookingsAsync(
+            Guid userId,
+            int pageNumber,
+            int pageSize)
+        {
+            return GetBookingsAsync(
+                userId,
+                pageNumber,
+                pageSize,
+                BookingPeriod.All);
+        }
+
+        public Task<PaginatedResponse<BookingResponseDto>> GetUpcomingBookingsAsync(
+            Guid userId,
+            int pageNumber,
+            int pageSize)
+        {
+            return GetBookingsAsync(
+                userId,
+                pageNumber,
+                pageSize,
+                BookingPeriod.Upcoming);
+        }
+
+        public Task<PaginatedResponse<BookingResponseDto>> GetBookingHistoryAsync(
+            Guid userId,
+            int pageNumber,
+            int pageSize)
+        {
+            return GetBookingsAsync(
+                userId,
+                pageNumber,
+                pageSize,
+                BookingPeriod.History);
+        }
+
+        private async Task<PaginatedResponse<BookingResponseDto>> GetBookingsAsync(
+            Guid userId,
+            int pageNumber,
+            int pageSize,
+            BookingPeriod period)
+        {
+            var now = DateTime.UtcNow;
+
+            var query = dbContext.Bookings
+                .AsNoTracking()
+                .Where(booking => booking.UserId == userId && booking.Status != "Cancelled");
+
+            query = period switch
+            {
+                BookingPeriod.Upcoming =>
+                    query.Where(booking => booking.EndDatetime > now),
+
+                BookingPeriod.History =>
+                    query.Where(booking => booking.EndDatetime <= now),
+
+                _ => query
+            };
+
+            var totalRecords = await query.CountAsync();
+
+            var bookings = await query
+                .OrderByDescending(booking => booking.StartDatetime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(booking => new BookingResponseDto
+                {
+                    BookingId = booking.BookingId,
+                    UserId = booking.UserId,
+                    ResourceId = booking.ResourceId,
+                    Status = booking.Status,
+                    CreatedDatetime = booking.CreatedDatetime,
+                    ModifiedDatetime = booking.ModifiedDatetime,
+                    StartDatetime = booking.StartDatetime,
+                    EndDatetime = booking.EndDatetime
+                })
+                .ToListAsync();
+
+            return new PaginatedResponse<BookingResponseDto>
+            {
+                Items = bookings,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords,
+                TotalPages = (int)Math.Ceiling(
+                    (double)totalRecords / pageSize)
+            };
+        }
+
+        public async Task<BookingResponseDto?> GetByIdAsync(
+            Guid bookingId,
+            Guid userId)
+        {
+            var booking = await dbContext.Bookings
+                .AsNoTracking()
+                .FirstOrDefaultAsync(booking =>
+                    booking.BookingId == bookingId &&
+                    booking.UserId == userId);
+
+            return booking is null
+                ? null
+                : RespondBookingData(booking);
         }
     }
 }
