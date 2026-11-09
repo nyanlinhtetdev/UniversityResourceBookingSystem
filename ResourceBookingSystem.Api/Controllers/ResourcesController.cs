@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ResourceBookingSystem.WebApp.ResourceCategory.ServiceInterfaces;
 using ResourceBookingSystem.WebApp.Resource.ServiceInterfaces;
 
 namespace ResourceBookingSystem.API.Controllers
@@ -7,8 +8,18 @@ namespace ResourceBookingSystem.API.Controllers
     [Route("api/resources")]
     [ApiController]
     [Authorize(Roles = "Student,Admin,SuperAdmin")]
-    public class ResourcesController(IResourceService resourceService) : ControllerBase
+    public class ResourcesController(
+        IResourceService resourceService,
+        IResourceCategoryService resourceCategoryService) : ControllerBase
     {
+        [HttpGet("~/api/resource-categories")]
+        public async Task<IActionResult> GetResourceCategories()
+        {
+            var categories = await resourceCategoryService.GetAllAsync();
+
+            return Ok(categories);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetResources()
         {

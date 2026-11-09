@@ -14,6 +14,8 @@ using ResourceBookingSystem.WebApp.Resource.ServiceInterfaces;
 using ResourceBookingSystem.WebApp.Resource.Services;
 using ResourceBookingSystem.WebApp.Booking.ServiceInterfaces;
 using ResourceBookingSystem.WebApp.Booking.Services;
+using ResourceBookingSystem.WebApp.ResourceCategory.ServiceInterfaces;
+using ResourceBookingSystem.WebApp.ResourceCategory.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IResourceCategoryService, ResourceCategoryService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
