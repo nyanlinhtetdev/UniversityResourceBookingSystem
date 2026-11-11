@@ -53,4 +53,9 @@ namespace ResourceBookingSystem.WebApp.Auth.DTOs
         public UserDto User { get; set; } = null!;
         public string AccessToken { get; set; } = null!;
     }
+    public class RefreshTokenResponseDto
+    {
+        public UserDto User { get; set; } = null!;
+        public string AccessToken { get; set; } = null!;
+    }
 }

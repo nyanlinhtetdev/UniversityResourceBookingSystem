@@ -14,7 +14,7 @@ namespace ResourceBookingSystem.WebApp.Auth.Services
 {
     public class AuthService(AppDbContext dbContext, IConfiguration configuration): IAuthService
     {
-        public async Task<User?> Register(RegisterRequestDto registerRequestDto)
+        public async Task<UserDto?> Register(RegisterRequestDto registerRequestDto)
         {
             var existingUser = await dbContext.Users.AnyAsync(user => user.Email == registerRequestDto.Email);
             if(existingUser)
@@ -38,7 +38,16 @@ namespace ResourceBookingSystem.WebApp.Auth.Services
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
 
-            return user;
+            return new UserDto
+            {
+                UserId = user.UserId,
+                FullName = user.FullName,
+                Email = user.Email,
+                ContactNumber = user.ContactNumber,
+                StudentId = user.StudentId,
+                Role = user.Role,
+                IsActive = user.IsActive
+            };
         }
 
         

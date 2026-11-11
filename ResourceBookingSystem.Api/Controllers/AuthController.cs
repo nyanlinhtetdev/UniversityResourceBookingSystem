@@ -37,16 +37,10 @@ namespace ResourceBookingSystem.API.Controllers
                     detail: "Invalid email or password");
             }
 
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
-                Path = "/"
-            };
+            // Add refresh token to browser cookie
 
-            Response.Cookies.Append("refreshToken", result.RefreshToken, cookieOptions);
+            AddRefreshTokenCookie(result);
+
             return Ok(new LoginResponseDto
             {
                 User = result.User,
@@ -69,12 +63,18 @@ namespace ResourceBookingSystem.API.Controllers
                     title: "Invalid refresh token",
                     detail: "Invalid refresh token");
             }
-            return Ok(new LoginResponseDto
+
+            // Add the new refresh token to browser cookie
+
+            AddRefreshTokenCookie(result);
+
+            return Ok(new RefreshTokenResponseDto
             {
                 User = result.User,
                 AccessToken = result.AccessToken
             });
         }
+
 
         [Authorize]
         [HttpPost("logout")]
@@ -96,6 +96,20 @@ namespace ResourceBookingSystem.API.Controllers
             {
                 message = "Successfully logout"
             }); 
+        }
+
+        private void AddRefreshTokenCookie(LoginServiceResponseDto result)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Path = "/"
+            };
+
+            Response.Cookies.Append("refreshToken", result.RefreshToken, cookieOptions);
         }
     }
 }
